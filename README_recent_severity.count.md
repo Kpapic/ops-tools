@@ -1,5 +1,5 @@
 
-## Alat: who_is_noisy.sh
+## Alat: recent_severity_count.sh
 
 Broji ERROR i WARNING unutar zadnjih N linija loga (svježi signal).
 Koristi `tail + grep + wc -l`; bez automatizacije, za ručni uvid.
