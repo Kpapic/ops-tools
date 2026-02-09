@@ -1,4 +1,5 @@
 # Log severity check (ERROR / WARNING)
+#Zašto postoji
 
 Ova skripta služi za brzu provjeru log datoteka u potrazi za ERROR i WARNING porukama.
 Nmajenjena je ručnom korištenju tijekom smjene (human-readable output)
