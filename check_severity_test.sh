@@ -23,7 +23,7 @@ war_count=$(grep -i "warning" "$LOGFILE" | wc -l)
 echo
 echo "Erorr count: $err_count"
 echo "Warning count: $war_count"
-echo "------------------------------"
+echo "================================"
 
 if grep -qi "error" "$LOGFILE"; then
 	echo "Ima ERROR"
