@@ -1,8 +1,14 @@
 # Log severity check (ERROR / WARNING)
-#Zašto postoji
+# Zašto postoji
 
-Ova skripta služi za brzu provjeru log datoteka u potrazi za ERROR i WARNING porukama.
-Nmajenjena je ručnom korištenju tijekom smjene (human-readable output)
+
+kripta se koristi kao brzi, ručni alat tijekom telco smjene
+za rano prepoznavanje potencijalnih problema (WARNING)
+i kritičnih stanja (ERROR) u logovima.
+
+WARNING poruke se tretiraju kao rani indikator
+potencijalnih budućih ERROR stanja i pomažu u proaktivnom nadzoru sustava.
+
 
 ## Što radi
 - Provjerava postoji li ERROR u log i ispisuje zadnju (ili zadnjih N) ERROR linija
