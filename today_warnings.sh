@@ -24,5 +24,18 @@ echo "Date: $TODAY"
 echo "Today's WARNING messages:"
 echo "========================="
 
-# Filtering WARNING message + today's date
-grep -i "warning" "$LOGFILE" | grep "$TODAY"
+
+
+# Count
+warn_today_count=$(grep -i -c "$TODAY.*warning" "$LOGFILE")
+
+# Human readable
+echo "Today's WARNING count: $warn_today_count"
+echo "========================================"
+
+if [ "$warn_today_count" -eq 0 ]; then
+	echo "No WARNING messages today"
+else
+# Show all
+grep -i "$TODAY.*warning" "$LOGFILE"
+fi
