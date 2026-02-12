@@ -1,29 +1,38 @@
 #!/bin/bash
 
-# Use:
-# ./tail_error_history.sh	# use default log
-# ./tail.error_history.sh /path/log	# use different log
-#
-LOGFILE="${1:-/opt/netzwert/log/CentralError.log}"
-N=${2:-5}
+# Default value
+N=5
+LOGFILE"/opt/netzwert/log/CentralError.log"
 
-# Check if the file exists
-echo
-if [ -d "$LOGFILE" ]; then
-	echo "Error: path is a directory - expected file"
-	exit 0
-fi
+usage () {
+	echo " Use: $0 [-n broj_linija] [-f log_file] [-h]"
+	echo " -n N	broj zadnjih ERROR linija (default: 5)"
+	echo " -f FILE	put do log datoteke (default: /opt/netzwert/log/CentralError.log)"
+	echo " -h	prikaži pomoć"
+}
+
+# CLI opcije
+
+while getopts ":n:f:h" opt; do
+	case "$opt" in
+		n) N="$OPTARG" ;;	# vrijednost iza -n
+		f) LOGFILE="$OPTARG" ;; 	# vrijednost iza -f
+		h) usage; exit 0 ;;
+		\?) echo "Nepoznata opcija: -$OPTARG"; usage; exit 1 ;;
+		:) echo "Opcija -$OPTARG zahtijev vrijednost"; usage; exit 1 ;;
+	esac
+done
+
+# Provjera datoteke
 
 if [ ! -f "$LOGFILE" ]; then
-	echo "Error: log file doesn't exists: $LOGFILE"
-	exit 0
+	echo "Greška: log datoteka ne postoji: $LOGFILE"
+	exit 1
 fi
 
-echo
 echo "Logfile: $LOGFILE"
-echo "Last N error lines"
-echo "===================="
+echo "zadnjih $N ERROR linija"
+echo "==========================="
 
-grep -i "error" "$LOGFILE" | tail -"$N"
-
+grep -i "error" "$LOGFILE" | tail -n "$N"
 
