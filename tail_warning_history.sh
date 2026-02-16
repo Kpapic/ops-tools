@@ -1,22 +1,45 @@
 #!/bin/bash
+# ------------ Default settings ---------------
 #
-# Script for checking WARNING message from the log file
-#
-LOGFILE="${1:-/opt/netzwert/log/CentralError.log}"
-N=${2:-5}
+N=5
+LOGFILE="/opt/netzwert/log/CentralError.log"
 
-# Check if the given path is a log file
+# -------------- Help ----------------
 #
-if [ -d "$LOGFILE" ]; then
-	echo "Error: given path is a directory"
-	exit 0
-fi
+usage() {
+	echo "Use: $0 [-n number of lines] [-f log_file] [-h]"
+	echo " -n N number of last WARNING lines (default: 5)"
+	echo " -f FILE path to log file (default:/opt/netzwert/log/CentralError.log)"
+	echo " -h show help"
 
+}
+
+# ------- Parsing ----------------
+#
+while getopts ":n:f:h:" opt; do
+	case "$opt" in
+		n) N="$OPTARG" ;;
+		f) LOGFILE="$OPTARG" ;;
+		h) usage; exit 0 ;;
+		\?) echo "Unknown option: -$OPTARG"; usage; exit 1 ;;
+		:) echo "Option -$OPTARG needs argument"; usage; exit 1 ;;
+	esac
+done
+
+
+# ----------------- Basic log file check -----------------
+#
 if [ ! -f "$LOGFILE" ]; then
-	echo "Error: given path is not a log file: $LOGFILE"
-	exit 0
+	echo "Error: log file doesn't exists: $LOGFILE"
+	exit 1
 fi
 
-echo "The warning N lines from the Log file: $LOGFILE"
+# ------------ Report ---------------
+#
+#
+echo "Log: $LOGFILE"
+echo "Last $N WARNING lines"
+echo "======================"
 
-grep -i "warning" "$LOGFILE" | tail -"$N"
+grep -i "warning" "$LOGFILE" | tail -n "$N"
+

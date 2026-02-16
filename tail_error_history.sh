@@ -2,7 +2,7 @@
 
 # Default value
 N=5
-LOGFILE"/opt/netzwert/log/CentralError.log"
+LOGFILE="/opt/netzwert/log/CentralError.log"
 
 usage () {
 	echo " Use: $0 [-n broj_linija] [-f log_file] [-h]"
