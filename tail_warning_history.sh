@@ -16,7 +16,7 @@ usage() {
 
 # ------- Parsing ----------------
 #
-while getopts ":n:f:h:" opt; do
+while getopts ":n:f:h" opt; do
 	case "$opt" in
 		n) N="$OPTARG" ;;
 		f) LOGFILE="$OPTARG" ;;
