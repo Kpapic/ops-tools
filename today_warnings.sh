@@ -1,28 +1,45 @@
 #!/bin/bash
 #
-# Use:
-# ./today_warnings.sh	# default log
-# ./today_warning.sh /path/to/log/	# second log
+# --------- Default values -------------
 #
-LOGFILE="${1:-/opt/netzwert/log/CentralError.log}"
+LOGFILE="/opt/netzwert/log/CentralError.log"
+N=5
+
+# ---------- Help ------------
+#
+usage () {
+	echo "Use: $N [-n broj linija] [-f log file] [-h]"
+	echo " -n N last N WARNING lines for today (default: 5)"
+	echo " -f FILE path to log file (Default: /opt/netzwert/log/CentralError.log)"
+	echo " -h	show help"
+}
+
+# ------------- Parsing CLI options ---------------
+#
+while getopts ":n:f:h" opt; do
+	case "$opt" in
+		n) N="$OPTARG" ;;
+		f) LOGFILE="$OPTARG" ;;
+		h) usage; exit 1 ;;
+		\?) echo "Unknow option: -$OPTARG"; usage; exit 1 ;;
+		:) echo "Option -$OPTARG needs argument"; usage; exit 1 ;;
+	esac
+done
+
+#------------ Check file -----------
+#
+if [ ! -f "$LOGFILE" ]; then
+	echo "Error: file does not exits: $LOGFILE"
+	exit 1
+fi
+
+# ------------ Main logic - today's date ------------
+#
 TODAY=$(date +%Y%m%d)
 
-# Check for the directory/file/log file
-#
-if [ -d "$LOGFILE" ]; then
-	echo "Error: the given path is a directory"
-	exit 1
-fi
-
-if [ ! -f "$LOGFILE" ]; then
-	echo "Error: the given path is not a log file: $LOGFILE"
-	exit 1
-fi
-
 echo "Log: $LOGFILE"
-echo "Date: $TODAY"
-echo "Today's WARNING messages:"
+echo "Today's date: $TODAY"
+echo "Last N lines from today"
 echo "========================="
 
-# Filtering WARNING message + today's date
-grep -i "warning" "$LOGFILE" | grep "$TODAY"
+grep -i "warning" "$LOGFILE" | grep "$TODAY" | tail -n "$N"
