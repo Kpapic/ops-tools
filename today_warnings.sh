@@ -8,7 +8,7 @@ N=5
 # ---------- Help ------------
 #
 usage () {
-	echo "Use: $N [-n broj linija] [-f log file] [-h]"
+	echo "Use: $0 [-n broj linija] [-f log file] [-h]"
 	echo " -n N last N WARNING lines for today (default: 5)"
 	echo " -f FILE path to log file (Default: /opt/netzwert/log/CentralError.log)"
 	echo " -h	show help"
@@ -35,11 +35,13 @@ fi
 
 # ------------ Main logic - today's date ------------
 #
+TODAY_YMD="$(date +%Y%m%d)"
+TODAY_SYS="$(date +'%b %e')"
 TODAY=$(date +%Y%m%d)
 
 echo "Log: $LOGFILE"
-echo "Today's date: $TODAY"
-echo "Last N lines from today"
+echo "Today's date: $TODAY_YMD"
+echo "Last $N WARNING lines from today"
 echo "========================="
 
-grep -i "warning" "$LOGFILE" | grep "$TODAY" | tail -n "$N"
+grep -i "warning" "$LOGFILE" | grep -E "$TODAY_YMD|TODAY_SYS" | tail -n "$N"
