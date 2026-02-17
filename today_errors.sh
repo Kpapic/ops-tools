@@ -1,36 +1,56 @@
 #!/bin/bash
+# -------------- Default values --------------
 #
-# Use:
-# ./today_errors.sh	# default log
-# ./today_errors.sh /path/log	# second log
-#
-LOGFILE="${1:-/opt/netzwert/log/CentralError.log}"
-TODAY=$(date +%Y%m%d)
+LOGFILE="/opt/netzwert/log/CentralError.log"
+N=5
 
-# Checks
+# ------------ Help function ---------------
 #
-if [ -d "$LOGFILE" ]; then
-	echo "Error: path is a directory, expecting log file"
-	exit 1
-fi
+usage() {
+	echo "Use $0 [-n number lines] [-f log file] [-h]"
+	echo " -n N Last N ERROR lines for today (default: 5)"
+	echo " -f FILE	path to log file (Default:/opt/netzwert/log/CentralError.log)"
+	echo " -h	show help"
+}
 
+# ------------- Long option -----------------
+#
+for arg in "$@"; do
+	case "$arg" in
+		--help) usage; exit 0 ;;
+		--file) shift; LOGFILE="$1"; shift ;;
+		--number) shift; N="$1"; shift ;;
+	esac
+done
+
+# --------------- Parsing short options --------------------
+#
+while getopts ":n:f:h" opt; do
+	case "$opt" in
+		n) N="$OPTARG" ;;
+		f) LOGFILE="$OPTARG" ;;
+		h) usage; exit 0 ;;
+		\?) echo "Unknown option: -$OPTARG"; usage; exit 1 ;;
+		:) echo " Option -$OPTARG requires and argument"; usage; exit 1 ;;
+	esac
+done
+
+# ------------- Checking log file ----------------
+#
 if [ ! -f "$LOGFILE" ]; then
-	echo "Error: path is not a log file: $LOGFILE"
+	echo "Error: file does not exists: $LOGFILE"
 	exit 1
 fi
 
-echo "$LOGFILE"
-echo "$TODAY"
-echo "========================="
+# ----------- Two format date -------------
+#
+TODAY_YMD=$(date +%Y%m%d)
+TODAY_SYS=$(date "+%b %e")
 
-error_today_count=$(grep -i -c "$TODAY.*error" "$LOGFILE")
+echo "Logfile: $LOGFILE"
+echo "Today's date: $TODAY_YMD"
+echo " Last $N ERROR lines for today"
+echo "============================="
 
-echo "Today's ERROR count: $error_today_count"
-echo "==================================="
+grep -i "error" "$LOGFILE" | grep -E "$TODAY_YMD|$TODAY_SYS" | tail -n $N
 
-# Printing ERROR line if any
-if [ "$error_today_count" -eq 0 ]; then
-	echo "No ERROR messages for today"
-else
-	grep -i "TODAY.*error" "$LOGFILE"
-fi
