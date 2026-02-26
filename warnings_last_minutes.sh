@@ -105,7 +105,7 @@ echo "Anchors: $PAST_SYS .. $NOW_SYS"
 echo "Last $N WARNING lines in window"
 echo "==============================================="
 
-results="$(grep -i "warning" "$LOGFILE" | grep -E "$NOW_SYS|$PAST_SYS|$NOW_NW|$PAST_NW" | tail -n "$N")"
+results="$(awk 'BEGIN{IGNORECASE=1} /warning/' "$LOGFILE" | grep -E "$NOW_SYS|$PAST_SYS|$NOW_NW|$PAST_NW")"
 
 if [ -z "$results" ]; then
 	echo "No WARNINGS found in the last $M minute(s)"
