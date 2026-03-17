@@ -86,12 +86,12 @@ print $1, $2, $3
 print $5
 rest = ""
 for (i=6; i<=NF; i++) {
-	rest = rest (i==6 ? "" : " " ) $i
+	rest = rest (i==6 ? "" : " ") $i
 }
 print rest
 print "------------------------"
 }
-' "$LOGFILE" | grep -E "$NOW_SYS|$PAST_SYS|$NOW_NW|$PAST_NW" ) "
+' "$LOGFILE" )"
 
 if [ -z "$results" ]; then
 	echo "No WARNING lines fond in last $M minutes"
